@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace CQRS.WebChat.WebView.Controllers
 {
-    [System.Web.Http.Authorize]
+    //[System.Web.Http.Authorize]
     public class ChatController : Controller
     {
         private ICommandsHandler _commandsHandler;
