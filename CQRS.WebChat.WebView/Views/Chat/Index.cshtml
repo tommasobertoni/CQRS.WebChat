@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .messageContainer {
+        margin-bottom: 10px;
+    }
+
+    .user, .time {
+        font-style: italic;
+        color: blue;
+        font-size: large;
+    }
+
+    .time {
+        margin-right: 5px;
+    }
+
+    .user {
+        margin-right: 10px;
+    }
+
+    .messageText {
+        font-size: large;
+    }
+
+    textarea {
+        max-width: none;
+        resize: vertical;
+    }
+
+    .rightSeparator, #display {
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    .rightSeparator {
+        border-right: 1px solid rgba(85, 85, 85, 0.4) !important;
+        padding-right: 20px;
+    }
+</style>
+
+<h2>Web Chat</h2>
+<br />
+<div class="row">
+    <div class="col-md-4 rightSeparator">
+        <div id="messageInputsContainer">
+            <textarea id="messageText" class="form-control" placeholder="message" rows="4" autofocus></textarea>
+            <br />
+            <input type="button" value="Send Talk" class="btn btn-primary pull-right" id="sendButton" />
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div id="display"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+
+        var display = $("#display");
+        var messageText = $("#messageText");
+
+        $.connection.hub.start();
+        var chatHubProxy = $.connection.chatHub;
+        chatHubProxy.client.talk = function (talkevent) {
+            getTalk(talkevent.User, talkevent.Id);
+        };
+
+        var sendTalkButton = $("#sendButton");
+
+        sendTalkButton.click(function () {
+            var talk = {
+                Text: messageText.val()
+            };
+            messageText.val("");
+            sendTalk(talk);
+            messageText.focus();
+        });
+
+        function sendTalk(talk) {
+            $.ajax({
+                url: "/Chat/Talk",
+                type: "POST",
+                data: talk,
+                success: function (data) {},
+                error: function (xhr) {
+                    console.log("errore: " + xhr);
+                }
+            });
+        }
+
+        function getTalk(user, id) {
+            $.ajax({
+                url: "/api/ChatApi/" + user + "/" + id,
+                type: "GET",
+                success: function (data) {
+                    showTalk(data);
+                },
+                error: function (xhr) {
+                    console.log("errore: " + xhr);
+                }
+            });
+        }
+
+        function showTalk(talk) {
+            var userContainer = $("<span class='user'>" + talk.User + ":</span>");
+            var textContainer = $("<span class='messageText talk'>" + talk.Text + "</span>");
+            var timeContainer = $("<span class='time'>[" + talk.Time + "]</span>");
+
+            var messageContainer = $("<div class='messageContainer'></div>");
+            messageContainer.append(timeContainer).append(userContainer).append(textContainer);
+
+            messageContainer.hide();
+            display.prepend(messageContainer);
+            messageContainer.show(400);
+        }
+
+    </script>
+}
