@@ -10,5 +10,7 @@ namespace CQRS.WebChat.Domain.Contracts
     public interface IQueriesHandler
     {
         TalkSimpleTime GetTalk(string user, string id);
+
+        ScreamSimpleTime GetScream(string user, string id);
     }
 }

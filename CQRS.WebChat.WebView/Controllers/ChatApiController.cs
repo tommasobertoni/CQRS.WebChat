@@ -28,15 +28,47 @@ namespace CQRS.WebChat.WebView.Controllers
             _queriesHandler = new AzureQueriesHandler(storageConnection);
         }
 
-        public TalkSimpleTime Get(string user, string id)
+        public MessageSimpleTime Get(string user, string id, int type)
         {
-            return _queriesHandler.GetTalk(user, id);
+            MessageSimpleTime message = null;
+            switch (type)
+            {
+                case 0:
+                    message = _queriesHandler.GetTalk(user, id);
+                    break;
+
+                case 1:
+                    message = _queriesHandler.GetScream(user, id);
+                    break;
+            }
+
+            return message;
         }
 
-        public void Post(TalkEvent talkEvent)
+        public void Post(MessageEvent messageEvent)
         {
             var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
-            hub.Clients.All.talk(talkEvent);
+
+            switch (messageEvent.Type)
+            {
+                case 0:
+                    var talkEvent = new TalkEvent
+                    {
+                        Id = messageEvent.Id,
+                        User = messageEvent.User
+                    };
+                    hub.Clients.All.talk(talkEvent);
+                    break;
+
+                case 1:
+                    var screamEvent = new ScreamEvent
+                    {
+                        Id = messageEvent.Id,
+                        User = messageEvent.User
+                    };
+                    hub.Clients.All.scream(screamEvent);
+                    break;
+            }
         }
     }
 }

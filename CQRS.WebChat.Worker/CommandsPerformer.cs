@@ -63,6 +63,10 @@ namespace CQRS.WebChat.Worker
                         {
                             PerformCommand(command as Talk);
                         }
+                        else if (command is Scream)
+                        {
+                            PerformCommand(command as Scream);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -78,7 +82,7 @@ namespace CQRS.WebChat.Worker
                 {
                     currentAttempt = 0;
                     if (waitingTime < MAX_WAITING_TIME)
-                        waitingTime = (int) (waitingTime * 1.3);
+                        waitingTime += 250;
                     Log("~ Increase waiting time to " + waitingTime, ConsoleColor.DarkYellow);
                 }
 
@@ -114,19 +118,48 @@ namespace CQRS.WebChat.Worker
                 Id = Guid.NewGuid().ToString(),
                 User = command.User,
                 Text = command.Text,
-                Time = command.Time
+                Time = command.Time,
+                Type = 0
             };
 
             _repository.Insert(message);
             Log("~ new message from " + message.User + ": " + message.Text, ConsoleColor.Green);
 
-            TalkEvent talkEvent = new TalkEvent
+            MessageEvent messageEvent = new MessageEvent
             {
                 Id = message.Id,
-                User = message.User
+                User = message.User,
+                Type = 0
             };
 
-            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(talkEvent)));
+            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageEvent)));
+            byteArrayContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            var task = _httpClient.PostAsync("http://localhost:32349/api/chatapi", byteArrayContent);
+            //task.Wait();
+        }
+
+        private void PerformCommand(Scream command)
+        {
+            Message message = new Message
+            {
+                Id = Guid.NewGuid().ToString(),
+                User = command.User,
+                Text = command.Text,
+                Time = command.Time,
+                Type = 1
+            };
+
+            _repository.Insert(message);
+            Log("~ new scream message from " + message.User + ": " + message.Text, ConsoleColor.Green);
+
+            MessageEvent messageEvent = new MessageEvent
+            {
+                Id = message.Id,
+                User = message.User,
+                Type = 1
+            };
+
+            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageEvent)));
             byteArrayContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
             var task = _httpClient.PostAsync("http://localhost:32349/api/chatapi", byteArrayContent);
             //task.Wait();

@@ -44,9 +44,14 @@
     <Compile Include="Contracts\ICommandsQueue.cs" />
     <Compile Include="Contracts\IMessageRepository.cs" />
     <Compile Include="Contracts\IQueriesHandler.cs" />
+    <Compile Include="Entities\Commands\Scream.cs" />
     <Compile Include="Entities\Commands\Talk.cs" />
+    <Compile Include="Entities\Events\MessageEvent.cs" />
+    <Compile Include="Entities\Events\ScreamEvent.cs" />
     <Compile Include="Entities\Events\TalkEvent.cs" />
     <Compile Include="Entities\Message.cs" />
+    <Compile Include="Entities\Queries\ScreamSimpleTime.cs" />
+    <Compile Include="Entities\Queries\MessageSimpleTime.cs" />
     <Compile Include="Entities\Queries\TalkSimpleTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

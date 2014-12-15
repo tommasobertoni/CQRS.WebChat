@@ -38,5 +38,15 @@ namespace CQRS.WebChat.WebView.Controllers
             _commandsHandler.Handle(command);
             return new HttpStatusCodeResult(202);
         }
+
+        [ActionName("Scream")]
+        [HttpPost]
+        public ActionResult Handle(Scream command)
+        {
+            command.User = TestUser;
+            command.Time = DateTime.Now.ToUniversalTime();
+            _commandsHandler.Handle(command);
+            return new HttpStatusCodeResult(202);
+        }
     }
 }

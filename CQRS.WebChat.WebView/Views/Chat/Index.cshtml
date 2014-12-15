@@ -26,6 +26,13 @@
         font-size: large;
     }
 
+    .scream {
+        text-decoration: underline;
+        color: orangered;
+        font-style: italic;
+        font-size: larger;
+    }
+
     textarea {
         max-width: none;
         resize: vertical;
@@ -49,7 +56,8 @@
         <div id="messageInputsContainer">
             <textarea id="messageText" class="form-control" placeholder="message" rows="4" autofocus></textarea>
             <br />
-            <input type="button" value="Send Talk" class="btn btn-primary pull-right" id="sendButton" />
+            <input type="button" value="Send Talk" class="btn btn-primary pull-right" id="sendTalk" style="margin:10px" />
+            <input type="button" value="Scream!" class="btn btn-primary pull-right" id="sendScream" style="margin:10px" />
         </div>
     </div>
     <div class="col-md-8">
@@ -68,25 +76,39 @@
         $.connection.hub.start();
         var chatHubProxy = $.connection.chatHub;
         chatHubProxy.client.talk = function (talkevent) {
-            getTalk(talkevent.User, talkevent.Id);
+            getMessage(talkevent.User, talkevent.Id, "0", "talk");
+        };
+        chatHubProxy.client.scream = function (screamEvent) {
+            getMessage(screamEvent.User, screamEvent.Id, "1", "scream");
         };
 
-        var sendTalkButton = $("#sendButton");
+        var sendTalkButton = $("#sendTalk");
 
         sendTalkButton.click(function () {
             var talk = {
                 Text: messageText.val()
             };
             messageText.val("");
-            sendTalk(talk);
+            sendMessage(talk, "Talk");
             messageText.focus();
         });
 
-        function sendTalk(talk) {
+        var sendScreamButton = $("#sendScream");
+
+        sendScreamButton.click(function () {
+            var scream = {
+                Text: messageText.val()
+            };
+            messageText.val("");
+            sendMessage(scream, "Scream");
+            messageText.focus();
+        });
+
+        function sendMessage(message, action) {
             $.ajax({
-                url: "/Chat/Talk",
+                url: "/Chat/" + action,
                 type: "POST",
-                data: talk,
+                data: message,
                 success: function (data) {},
                 error: function (xhr) {
                     console.log("errore: " + xhr);
@@ -94,12 +116,12 @@
             });
         }
 
-        function getTalk(user, id) {
+        function getMessage(user, id, type, messageTextClass) {
             $.ajax({
-                url: "/api/ChatApi/" + user + "/" + id,
+                url: "/api/ChatApi/" + user + "/" + id + "/" + type,
                 type: "GET",
                 success: function (data) {
-                    showTalk(data);
+                    showMessage(data, messageTextClass);
                 },
                 error: function (xhr) {
                     console.log("errore: " + xhr);
@@ -107,9 +129,9 @@
             });
         }
 
-        function showTalk(talk) {
+        function showMessage(talk, messageTextClass) {
             var userContainer = $("<span class='user'>" + talk.User + ":</span>");
-            var textContainer = $("<span class='messageText talk'>" + talk.Text + "</span>");
+            var textContainer = $("<span class='messageText " + messageTextClass + "'>" + talk.Text + "</span>");
             var timeContainer = $("<span class='time'>[" + talk.Time + "]</span>");
 
             var messageContainer = $("<div class='messageContainer'></div>");

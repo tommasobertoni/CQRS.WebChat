@@ -10,5 +10,7 @@ namespace CQRS.WebChat.Domain.Contracts
     public interface ICommandsHandler
     {
         void Handle(Talk command);
+
+        void Handle(Scream command);
     }
 }

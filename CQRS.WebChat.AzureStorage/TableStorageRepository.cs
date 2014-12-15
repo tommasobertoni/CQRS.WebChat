@@ -32,7 +32,8 @@ namespace CQRS.WebChat.AzureStorage
                 Id = mte.Id,
                 User = mte.User,
                 Text = mte.Text,
-                Time = mte.Time
+                Time = mte.Time,
+                Type = mte.Type
             };
         }
 
@@ -61,6 +62,8 @@ namespace CQRS.WebChat.AzureStorage
 
         public DateTime Time { get; set; }
 
+        public int Type { get; set; }
+
         public static explicit operator MessageTableEntity(Message message)
         {
             return new MessageTableEntity
@@ -70,7 +73,8 @@ namespace CQRS.WebChat.AzureStorage
                 Id = message.Id,
                 User = message.User,
                 Text = message.Text,
-                Time = message.Time
+                Time = message.Time,
+                Type = message.Type
             };
         }
     }

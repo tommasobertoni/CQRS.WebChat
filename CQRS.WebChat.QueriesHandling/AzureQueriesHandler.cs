@@ -21,7 +21,24 @@ namespace CQRS.WebChat.QueriesHandling
         TalkSimpleTime IQueriesHandler.GetTalk(string user, string id)
         {
             var message = _repository.GetById(user, id);
+
+            if (message == null || message.Type != 0) return null;
+
             return new TalkSimpleTime
+            {
+                User = message.User,
+                Text = message.Text,
+                Time = message.Time.ToLocalTime().ToString("HH:mm:ss")
+            };
+        }
+
+        ScreamSimpleTime IQueriesHandler.GetScream(string user, string id)
+        {
+            var message = _repository.GetById(user, id);
+
+            if (message == null || message.Type != 1) return null;
+
+            return new ScreamSimpleTime
             {
                 User = message.User,
                 Text = message.Text,

@@ -4,18 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CQRS.WebChat.Domain.Entities
+namespace CQRS.WebChat.Domain.Entities.Queries
 {
-    public class Message
+    public class MessageSimpleTime
     {
-        public string Id { get; set; }
-
         public string User { get; set; }
 
         public string Text { get; set; }
 
-        public DateTime Time { get; set; }
-
-        public int Type { get; set; }
+        public string Time { get; set; }
     }
 }

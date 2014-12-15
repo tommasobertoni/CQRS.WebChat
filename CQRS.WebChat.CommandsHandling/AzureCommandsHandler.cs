@@ -22,5 +22,10 @@ namespace CQRS.WebChat.CommandsHandling
         {
             _commandsQueue.Push(command);
         }
+
+        void ICommandsHandler.Handle(Scream command)
+        {
+            _commandsQueue.Push(command);
+        }
     }
 }

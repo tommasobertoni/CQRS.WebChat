@@ -22,7 +22,7 @@ namespace CQRS.WebChat.WebView
 
             config.Routes.MapHttpRoute(
                 name: "UserAndId",
-                routeTemplate: "api/{controller}/{user}/{id}",
+                routeTemplate: "api/{controller}/{user}/{id}/{type}",
                 defaults: new { id = RouteParameter.Optional }
             );
 

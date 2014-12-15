@@ -23,20 +23,20 @@ namespace CQRS.WebChat.AzureStorage
             _cloudQueue.CreateIfNotExists();
         }
 
-        void ICommandsQueue.Push(ICommand command)
+        public override void Push(ICommand command)
         {
-            CloudQueueMessage message = new CloudQueueMessage(ICommand.ToByteArray(command));
+            CloudQueueMessage message = new CloudQueueMessage(CommandToByteArray(command));
             _cloudQueue.AddMessage(message);
         }
 
-        ICommand ICommandsQueue.Pop()
+        public override ICommand Pop()
         {
             ICommand command = null;
             CloudQueueMessage message = _cloudQueue.GetMessage();
             if (message != null)
             {
                 _cloudQueue.DeleteMessage(message);
-                command = ICommand.FromByteArray(message.AsBytes);
+                command = CommandFromByteArray(message.AsBytes);
             }
 
             return command;
