@@ -28,7 +28,7 @@ namespace CQRS.WebChat.QueriesHandling
             {
                 User = message.User,
                 Text = message.Text,
-                Time = message.Time.ToLocalTime().ToString("HH:mm:ss")
+                SimpleTime = message.Time.ToLocalTime().ToString("HH:mm:ss")
             };
         }
 
@@ -42,7 +42,7 @@ namespace CQRS.WebChat.QueriesHandling
             {
                 User = message.User,
                 Text = message.Text,
-                Time = message.Time.ToLocalTime().ToString("HH:mm:ss")
+                SimpleTime = message.Time.ToLocalTime().ToString("HH:mm:ss")
             };
         }
     }

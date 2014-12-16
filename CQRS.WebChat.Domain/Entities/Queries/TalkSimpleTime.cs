@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace CQRS.WebChat.Domain.Entities.Queries
 {
-    public class TalkSimpleTime : MessageSimpleTime
+    public class TalkSimpleTime
     {
+        public string User { get; set; }
+
+        public string Text { get; set; }
+
+        public string SimpleTime { get; set; }
     }
 }

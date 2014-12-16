@@ -10,7 +10,6 @@ using System.Web.Mvc;
 
 namespace CQRS.WebChat.WebView.Controllers
 {
-    //[System.Web.Http.Authorize]
     public class ChatController : Controller
     {
         private ICommandsHandler _commandsHandler;
@@ -29,8 +28,8 @@ namespace CQRS.WebChat.WebView.Controllers
             return View();
         }
 
-        [ActionName("Talk")]
         [HttpPost]
+        [ActionName("Talk")]
         public ActionResult Handle(Talk command)
         {
             command.User = TestUser;
@@ -39,8 +38,8 @@ namespace CQRS.WebChat.WebView.Controllers
             return new HttpStatusCodeResult(202);
         }
 
-        [ActionName("Scream")]
         [HttpPost]
+        [ActionName("Scream")]
         public ActionResult Handle(Scream command)
         {
             command.User = TestUser;

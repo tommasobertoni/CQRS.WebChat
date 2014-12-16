@@ -26,7 +26,7 @@
         font-size: large;
     }
 
-    .scream {
+    .Scream {
         text-decoration: underline;
         color: orangered;
         font-style: italic;
@@ -76,10 +76,10 @@
         $.connection.hub.start();
         var chatHubProxy = $.connection.chatHub;
         chatHubProxy.client.talk = function (talkevent) {
-            getMessage(talkevent.User, talkevent.Id, "0", "talk");
+            getMessage("Talk", talkevent.User, talkevent.Id);
         };
         chatHubProxy.client.scream = function (screamEvent) {
-            getMessage(screamEvent.User, screamEvent.Id, "1", "scream");
+            getMessage("Scream", screamEvent.User, screamEvent.Id);
         };
 
         var sendTalkButton = $("#sendTalk");
@@ -116,12 +116,12 @@
             });
         }
 
-        function getMessage(user, id, type, messageTextClass) {
+        function getMessage(action, user, id) {
             $.ajax({
-                url: "/api/ChatApi/" + user + "/" + id + "/" + type,
+                url: "/api/ChatApi/" + action + "/" + user + "/" + id,
                 type: "GET",
                 success: function (data) {
-                    showMessage(data, messageTextClass);
+                    showMessage(data, action);
                 },
                 error: function (xhr) {
                     console.log("errore: " + xhr);

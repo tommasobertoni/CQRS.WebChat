@@ -13,11 +13,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Mvc;
 
 namespace CQRS.WebChat.WebView.Controllers
 {
-    //[System.Web.Http.Authorize]
     public class ChatApiController : ApiController
     {
         private IQueriesHandler _queriesHandler;
@@ -28,47 +26,34 @@ namespace CQRS.WebChat.WebView.Controllers
             _queriesHandler = new AzureQueriesHandler(storageConnection);
         }
 
-        public MessageSimpleTime Get(string user, string id, int type)
+        [HttpGet]
+        [ActionName("Talk")]
+        public TalkSimpleTime QueryTalk(string user, string id)
         {
-            MessageSimpleTime message = null;
-            switch (type)
-            {
-                case 0:
-                    message = _queriesHandler.GetTalk(user, id);
-                    break;
-
-                case 1:
-                    message = _queriesHandler.GetScream(user, id);
-                    break;
-            }
-
-            return message;
+            return _queriesHandler.GetTalk(user, id);
         }
 
-        public void Post(MessageEvent messageEvent)
+        [HttpPost]
+        [ActionName("Talk")]
+        public void TalkEvent(TalkEvent talkEvent)
         {
             var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.talk(talkEvent);
+        }
 
-            switch (messageEvent.Type)
-            {
-                case 0:
-                    var talkEvent = new TalkEvent
-                    {
-                        Id = messageEvent.Id,
-                        User = messageEvent.User
-                    };
-                    hub.Clients.All.talk(talkEvent);
-                    break;
+        [HttpGet]
+        [ActionName("Scream")]
+        public ScreamSimpleTime QueryScream(string user, string id)
+        {
+            return _queriesHandler.GetScream(user, id);
+        }
 
-                case 1:
-                    var screamEvent = new ScreamEvent
-                    {
-                        Id = messageEvent.Id,
-                        User = messageEvent.User
-                    };
-                    hub.Clients.All.scream(screamEvent);
-                    break;
-            }
+        [HttpPost]
+        [ActionName("Scream")]
+        public void ScreamEvent(TalkEvent talkEvent)
+        {
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.scream(talkEvent);
         }
     }
 }

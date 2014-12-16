@@ -125,16 +125,15 @@ namespace CQRS.WebChat.Worker
             _repository.Insert(message);
             Log("~ new message from " + message.User + ": " + message.Text, ConsoleColor.Green);
 
-            MessageEvent messageEvent = new MessageEvent
+            TalkEvent talkEvent = new TalkEvent
             {
                 Id = message.Id,
-                User = message.User,
-                Type = 0
+                User = message.User
             };
 
-            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageEvent)));
+            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(talkEvent)));
             byteArrayContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-            var task = _httpClient.PostAsync("http://localhost:32349/api/chatapi", byteArrayContent);
+            var task = _httpClient.PostAsync("http://localhost:32349/api/chatapi/talk", byteArrayContent);
             //task.Wait();
         }
 
@@ -152,16 +151,15 @@ namespace CQRS.WebChat.Worker
             _repository.Insert(message);
             Log("~ new scream message from " + message.User + ": " + message.Text, ConsoleColor.Green);
 
-            MessageEvent messageEvent = new MessageEvent
+            ScreamEvent screamEvent = new ScreamEvent
             {
                 Id = message.Id,
-                User = message.User,
-                Type = 1
+                User = message.User
             };
 
-            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageEvent)));
+            var byteArrayContent = new ByteArrayContent(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(screamEvent)));
             byteArrayContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-            var task = _httpClient.PostAsync("http://localhost:32349/api/chatapi", byteArrayContent);
+            var task = _httpClient.PostAsync("http://localhost:32349/api/chatapi/scream", byteArrayContent);
             //task.Wait();
         }
     }

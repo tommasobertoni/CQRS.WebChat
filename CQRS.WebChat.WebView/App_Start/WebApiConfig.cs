@@ -21,9 +21,14 @@ namespace CQRS.WebChat.WebView
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "UserAndId",
-                routeTemplate: "api/{controller}/{user}/{id}/{type}",
-                defaults: new { id = RouteParameter.Optional }
+                name: "ActionAndUserAndId",
+                routeTemplate: "api/{controller}/{action}/{user}/{id}",
+                defaults: new
+                {
+                    action = RouteParameter.Optional,
+                    user = RouteParameter.Optional,
+                    id = RouteParameter.Optional
+                }
             );
 
             config.Routes.MapHttpRoute(
